@@ -8,6 +8,6 @@ ADD . /docker-flask-test
 RUN pip install -r requirements.txt
 # define the command to start the container
 
-EXPOSE 5000
+EXPOSE 8080
 
 CMD ["python","server.py"]
