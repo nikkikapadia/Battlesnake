@@ -11,7 +11,7 @@ after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   #take built images and push to DOcker hub
   - docker push nikkikapadia/battlesnake
-  #test
+ 
 
 deploy:
   skip_cleanup: true
