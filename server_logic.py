@@ -104,8 +104,20 @@ def choose_move(data: dict) -> str:
     length = data["you"]["length"]
     if health < 50 and length < 11:
         closeFood = closestFood(my_head, food)
-        if closeFood(0) == 1 and safe(opponents, closeFood(1)):
-            return directionToMove(my_head, closeFood(1))
+        if closeFood[0] == 1 and safe(opponents, closeFood[1]):
+            move = directionToMove(my_head, closeFood[1])
+            if move in possible_moves:
+                return move
+        else:
+            point = closeFood[1]
+            if point["x"] > my_head["x"]:
+                remove("left", possible_moves)
+            if point["x"] < my_head["x"]:
+                remove("right", possible_moves)
+            if point["y"] > my_head["y"]:
+                remove("down", possible_moves)
+            if point["y"] < my_head["y"]:
+                remove("up", possible_moves)
 
     # Choose a random direction from the remaining possible_moves to move in, and then return that move
     move = random.choice(possible_moves)
