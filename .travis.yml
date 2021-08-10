@@ -1,0 +1,26 @@
+sudo: required
+language: python
+services:
+- docker
+
+script:
+- docker image build -t nikkikapadia/battlesnake .
+
+after_success:
+  #log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #take built images and push to DOcker hub
+  - docker push nikkikapadia/battlesnake
+  #test
+
+deploy:
+  skip_cleanup: true
+  provider: elasticbeanstalk
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
+  region: "us-west-2"
+  app: "battlesnake"
+  env: "Battlesnake-env"
+  bucket_name: "elasticbeanstalk-us-west-2-665985854211"
+  on:
+    all_branches: true
