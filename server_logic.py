@@ -110,6 +110,7 @@ def choose_move(data: dict) -> str:
                 return move
         else:
             point = closeFood[1]
+            # moves towards the closest piece of food
             if point["x"] > my_head["x"]:
                 remove("left", possible_moves)
             if point["x"] < my_head["x"]:
@@ -122,6 +123,8 @@ def choose_move(data: dict) -> str:
     # Choose a random direction from the remaining possible_moves to move in, and then return that move
 
     # TODO: Explore new strategies for picking a move that are better than random
+
+    # makes sure not to collide with itself in the future
     if ({"x": my_head["x"], "y": my_head["y"] + 2} in my_body):
         remove("up", possible_moves)
     if ({"x": my_head["x"], "y": my_head["y"] - 2} in my_body):
@@ -132,9 +135,11 @@ def choose_move(data: dict) -> str:
         remove("left", possible_moves)
 
     if len(possible_moves) > 1:
+        # prevents getting stuck in a corner
         awayFromCorners(my_head, possible_moves, board_height, board_width)
 
     if len(possible_moves) > 1:
+        # checks for head to heads
         for each in possible_moves:
             if each == "up" and not safe(opponents, {"x": my_head["x"], "y": my_head["y"] + 1}):
                 remove(each, possible_moves)
@@ -192,11 +197,11 @@ def directionToMove(head, point):
 
 
 def awayFromCorners(head, moves, height, width):
-    if head["x"] == 0 and (head["y"] > height - 1 - head["y"]):
+    if (head["x"] == 0 or head["x"] == width - 1) and (head["y"] > height - 1 - head["y"]):
         remove("up", moves)
-    elif head["x"] == 0 and (head["y"] < height - 1 - head["y"]):
+    elif (head["x"] == 0 or head["x"] == width - 1) and (head["y"] < height - 1 - head["y"]):
         remove("down", moves)
-    elif head["y"] == 0 and (head["x"] > width - 1 - head["x"]):
+    elif (head["y"] == 0 or head["y"] == height - 1) and (head["x"] > width - 1 - head["x"]):
         remove("right", moves)
-    elif head["y"] == 0 and (head["x"] < width - 1 - head["x"]):
+    elif (head["y"] == 0 or head["y"] == height - 1) and (head["x"] < width - 1 - head["x"]):
         remove("left", moves)
