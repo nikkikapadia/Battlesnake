@@ -89,20 +89,20 @@ def choose_move(data: dict) -> str:
     # TODO: Using information from 'data', don't let your Battlesnake pick a move that would collide with another Battlesnake
     opponents = data["board"]["snakes"][1:]
     for opp in opponents:
-        if opp["x"] == my_head["x"] and (opp["y"] - my_head["y"]) == 1:
+        if {"x": my_head["x"], "y": my_head["y"] + 1} in opp["body"]:
             remove("up", possible_moves)
-        if opp["x"] == my_head["x"] and (opp["y"] - my_head["y"]) == -1:
+        if {"x": my_head["x"], "y": my_head["y"] - 1} in opp["body"]:
             remove("down", possible_moves)
-        if (opp["x"] - my_head["x"]) == 1 and opp["y"] == my_head["y"]:
+        if {"x": my_head["x"] + 1, "y": my_head["y"]} in opp["body"]:
             remove("right", possible_moves)
-        if (opp["x"] - my_head["x"]) == -1 and opp["y"] == my_head["y"]:
+        if {"x": my_head["x"] - 1, "y": my_head["y"]} in opp["body"]:
             remove("left", possible_moves)
 
     # TODO: Using information from 'data', make your Battlesnake move towards a piece of food on the board
     food = data["board"]["food"]
     health = data["you"]["health"]
     length = data["you"]["length"]
-    if health < 50 and length < 11:
+    if health <= 20 and length < 11:
         closeFood = closestFood(my_head, food)
         if closeFood[0] == 1 and safe(opponents, closeFood[1]):
             move = directionToMove(my_head, closeFood[1])
@@ -120,8 +120,32 @@ def choose_move(data: dict) -> str:
                 remove("up", possible_moves)
 
     # Choose a random direction from the remaining possible_moves to move in, and then return that move
-    move = random.choice(possible_moves)
+
     # TODO: Explore new strategies for picking a move that are better than random
+    if ({"x": my_head["x"], "y": my_head["y"] + 2} in my_body):
+        remove("up", possible_moves)
+    if ({"x": my_head["x"], "y": my_head["y"] - 2} in my_body):
+        remove("down", possible_moves)
+    if ({"x": my_head["x"] + 2, "y": my_head["y"]} in my_body):
+        remove("right", possible_moves)
+    if ({"x": my_head["x"] - 2, "y": my_head["y"]} in my_body):
+        remove("left", possible_moves)
+
+    if len(possible_moves) > 1:
+        awayFromCorners(my_head, possible_moves, board_height, board_width)
+
+    if len(possible_moves) > 1:
+        for each in possible_moves:
+            if each == "up" and not safe(opponents, {"x": my_head["x"], "y": my_head["y"] + 1}):
+                remove(each, possible_moves)
+            elif each == "down" and not safe(opponents, {"x": my_head["x"], "y": my_head["y"] - 1}):
+                remove(each, possible_moves)
+            elif each == "right" and not safe(opponents, {"x": my_head["x"] + 1, "y": my_head["y"]}):
+                remove(each, possible_moves)
+            elif each == "left" and not safe(opponents, {"x": my_head["x"] - 1, "y": my_head["y"]}):
+                remove(each, possible_moves)
+
+    move = random.choice(possible_moves)
 
     print(f"{data['game']['id']} MOVE {data['turn']}: {move} picked from all valid options in {possible_moves}")
 
@@ -165,3 +189,14 @@ def directionToMove(head, point):
         return "right"
     elif (point["x"] - head["x"]) == -1 and point["y"] == head["y"]:
         return "left"
+
+
+def awayFromCorners(head, moves, height, width):
+    if head["x"] == 0 and (head["y"] > height - 1 - head["y"]):
+        remove("up", moves)
+    elif head["x"] == 0 and (head["y"] < height - 1 - head["y"]):
+        remove("down", moves)
+    elif head["y"] == 0 and (head["x"] > width - 1 - head["x"]):
+        remove("right", moves)
+    elif head["y"] == 0 and (head["x"] < width - 1 - head["x"]):
+        remove("left", moves)
