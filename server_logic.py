@@ -145,9 +145,9 @@ def choose_move(data: dict) -> str:
             elif each == "left" and not safe(opponents, {"x": (my_head["x"] - 1), "y": my_head["y"]}):
                 remove("left", possible_moves)
 
-    if len(possible_moves) > 1:
-        # prevents getting stuck in a corner
-        awayFromCorners(my_head, possible_moves, board_height, board_width)
+    # if len(possible_moves) > 1:
+    #     # prevents getting stuck in a corner
+    #     awayFromCorners(my_head, possible_moves, board_height, board_width)
 
     move = random.choice(possible_moves)
 
