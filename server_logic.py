@@ -47,8 +47,7 @@ def choose_move(data: dict) -> str:
 
     """
     my_head = data["you"]["head"]  # A dictionary of x/y coordinates like {"x": 0, "y": 0}
-    my_body = data["you"][
-        "body"]  # A list of x/y coordinate dictionaries like [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
+    my_body = data["you"]["body"]  # A list of x/y coordinate dictionaries like [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
 
     # TODO: uncomment the lines below so you can see what this data looks like in your output!
     print(f"~~~ Turn: {data['turn']}  Game Mode: {data['game']['ruleset']['name']} ~~~")
@@ -89,13 +88,13 @@ def choose_move(data: dict) -> str:
     # TODO: Using information from 'data', don't let your Battlesnake pick a move that would collide with another Battlesnake
     opponents = data["board"]["snakes"][1:]
     for opp in opponents:
-        if {"x": my_head["x"], "y": my_head["y"] + 1} in opp["body"]:
+        if {"x": my_head["x"], "y": (my_head["y"] + 1)} in opp["body"]:
             remove("up", possible_moves)
-        if {"x": my_head["x"], "y": my_head["y"] - 1} in opp["body"]:
+        if {"x": my_head["x"], "y": (my_head["y"] - 1)} in opp["body"]:
             remove("down", possible_moves)
-        if {"x": my_head["x"] + 1, "y": my_head["y"]} in opp["body"]:
+        if {"x": (my_head["x"] + 1), "y": my_head["y"]} in opp["body"]:
             remove("right", possible_moves)
-        if {"x": my_head["x"] - 1, "y": my_head["y"]} in opp["body"]:
+        if {"x": (my_head["x"] - 1), "y": my_head["y"]} in opp["body"]:
             remove("left", possible_moves)
 
     # TODO: Using information from 'data', make your Battlesnake move towards a piece of food on the board
@@ -125,26 +124,26 @@ def choose_move(data: dict) -> str:
     # TODO: Explore new strategies for picking a move that are better than random
 
     # makes sure not to collide with itself in the future
-    if ({"x": my_head["x"], "y": my_head["y"] + 2} in my_body):
+    if ({"x": my_head["x"], "y": (my_head["y"] + 2)} in my_body):
         remove("up", possible_moves)
-    if ({"x": my_head["x"], "y": my_head["y"] - 2} in my_body):
+    if ({"x": my_head["x"], "y": (my_head["y"] - 2)} in my_body):
         remove("down", possible_moves)
-    if ({"x": my_head["x"] + 2, "y": my_head["y"]} in my_body):
+    if ({"x": (my_head["x"] + 2), "y": my_head["y"]} in my_body):
         remove("right", possible_moves)
-    if ({"x": my_head["x"] - 2, "y": my_head["y"]} in my_body):
+    if ({"x": (my_head["x"] - 2), "y": my_head["y"]} in my_body):
         remove("left", possible_moves)
 
     if len(possible_moves) > 1:
         # checks for head to heads
         for each in possible_moves:
-            if each == "up" and not safe(opponents, {"x": my_head["x"], "y": my_head["y"] + 1}):
-                remove(each, possible_moves)
-            elif each == "down" and not safe(opponents, {"x": my_head["x"], "y": my_head["y"] - 1}):
-                remove(each, possible_moves)
-            elif each == "right" and not safe(opponents, {"x": my_head["x"] + 1, "y": my_head["y"]}):
-                remove(each, possible_moves)
-            elif each == "left" and not safe(opponents, {"x": my_head["x"] - 1, "y": my_head["y"]}):
-                remove(each, possible_moves)
+            if each == "up" and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] + 1)}):
+                remove("up", possible_moves)
+            elif each == "down" and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] - 1)}):
+                remove("down", possible_moves)
+            elif each == "right" and not safe(opponents, {"x": (my_head["x"] + 1), "y": my_head["y"]}):
+                remove("right", possible_moves)
+            elif each == "left" and not safe(opponents, {"x": (my_head["x"] - 1), "y": my_head["y"]}):
+                remove("left", possible_moves)
 
     if len(possible_moves) > 1:
         # prevents getting stuck in a corner
@@ -179,8 +178,8 @@ def closestFood(head, food):
 
 def safe(opponents, point):
     for snake in opponents:
-        if ((abs(snake["body"][0]["x"] - point["x"]) == 1) and (snake["body"][0]["y"] == point["y"])) or (
-                (abs(snake["body"][0]["y"] - point["y"]) == 1) and (snake["body"][0]["x"] == point["x"])):
+        if ((abs(snake["head"]["x"] - point["x"]) == 1) and (snake["head"]["y"] == point["y"])) or \
+                ((abs(snake["head"]["y"] - point["y"]) == 1) and (snake["head"]["x"] == point["x"])):
             return False
     return True
 
