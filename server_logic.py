@@ -135,14 +135,14 @@ def choose_move(data: dict) -> str:
 
     if len(possible_moves) > 1:
         # checks for head to heads
-        for each in possible_moves:
-            if each == "up" and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] + 1)}):
-                remove("up", possible_moves)
-            elif each == "down" and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] - 1)}):
-                remove("down", possible_moves)
-            elif each == "right" and not safe(opponents, {"x": (my_head["x"] + 1), "y": my_head["y"]}):
-                remove("right", possible_moves)
-            elif each == "left" and not safe(opponents, {"x": (my_head["x"] - 1), "y": my_head["y"]}):
+
+        if ("up" in possible_moves) and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] + 1)}):
+            remove("up", possible_moves)
+        if ("down" in possible_moves) and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] - 1)}):
+            remove("down", possible_moves)
+        if ("right" in possible_moves) and not safe(opponents, {"x": (my_head["x"] + 1), "y": my_head["y"]}):
+            remove("right", possible_moves)
+        if ("left" in possible_moves) and not safe(opponents, {"x": (my_head["x"] - 1), "y": my_head["y"]}):
                 remove("left", possible_moves)
 
     # if len(possible_moves) > 1:
