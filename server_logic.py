@@ -65,37 +65,37 @@ def choose_move(data: dict) -> str:
     board_width = data["board"]["width"]
 
     if my_head["x"] == 0:
-        remove("left", possible_moves)
+        possible_moves = remove("left", possible_moves)
     if my_head["y"] == 0:
-        remove("down", possible_moves)
+        possible_moves = remove("down", possible_moves)
     if my_head["x"] == (board_width - 1):
-        remove("right", possible_moves)
+         possible_moves = remove("right", possible_moves)
     if my_head["y"] == (board_height - 1):
-        remove("up", possible_moves)
+        possible_moves = remove("up", possible_moves)
 
     # TODO Using information from 'data', don't let your Battlesnake pick a move that would hit its own body
 
     for square in my_body:
         if square["x"] == my_head["x"] and (square["y"] - my_head["y"]) == 1:
-            remove("up", possible_moves)
+            possible_moves = remove("up", possible_moves)
         elif square["x"] == my_head["x"] and (square["y"] - my_head["y"]) == -1:
-            remove("down", possible_moves)
+            possible_moves = remove("down", possible_moves)
         elif (square["x"] - my_head["x"]) == 1 and square["y"] == my_head["y"]:
-            remove("right", possible_moves)
+            possible_moves = remove("right", possible_moves)
         elif (square["x"] - my_head["x"]) == -1 and square["y"] == my_head["y"]:
-            remove("left", possible_moves)
+            possible_moves = remove("left", possible_moves)
 
     # TODO: Using information from 'data', don't let your Battlesnake pick a move that would collide with another Battlesnake
     opponents = data["board"]["snakes"][1:]
     for opp in opponents:
         if {"x": my_head["x"], "y": (my_head["y"] + 1)} in opp["body"]:
-            remove("up", possible_moves)
+            possible_moves = remove("up", possible_moves)
         if {"x": my_head["x"], "y": (my_head["y"] - 1)} in opp["body"]:
-            remove("down", possible_moves)
+            possible_moves = remove("down", possible_moves)
         if {"x": (my_head["x"] + 1), "y": my_head["y"]} in opp["body"]:
-            remove("right", possible_moves)
+            possible_moves = remove("right", possible_moves)
         if {"x": (my_head["x"] - 1), "y": my_head["y"]} in opp["body"]:
-            remove("left", possible_moves)
+            possible_moves = remove("left", possible_moves)
 
     # TODO: Using information from 'data', make your Battlesnake move towards a piece of food on the board
     food = data["board"]["food"]
@@ -111,13 +111,13 @@ def choose_move(data: dict) -> str:
             point = closeFood[1]
             # moves towards the closest piece of food
             if point["x"] > my_head["x"]:
-                remove("left", possible_moves)
+                possible_moves = remove("left", possible_moves)
             if point["x"] < my_head["x"]:
-                remove("right", possible_moves)
+                possible_moves = remove("right", possible_moves)
             if point["y"] > my_head["y"]:
-                remove("down", possible_moves)
+                possible_moves = remove("down", possible_moves)
             if point["y"] < my_head["y"]:
-                remove("up", possible_moves)
+                possible_moves = remove("up", possible_moves)
 
     # Choose a random direction from the remaining possible_moves to move in, and then return that move
 
@@ -125,25 +125,25 @@ def choose_move(data: dict) -> str:
 
     # makes sure not to collide with itself in the future
     if ({"x": my_head["x"], "y": (my_head["y"] + 2)} in my_body):
-        remove("up", possible_moves)
+        possible_moves = remove("up", possible_moves)
     if ({"x": my_head["x"], "y": (my_head["y"] - 2)} in my_body):
-        remove("down", possible_moves)
+        possible_moves = remove("down", possible_moves)
     if ({"x": (my_head["x"] + 2), "y": my_head["y"]} in my_body):
-        remove("right", possible_moves)
+        possible_moves = remove("right", possible_moves)
     if ({"x": (my_head["x"] - 2), "y": my_head["y"]} in my_body):
-        remove("left", possible_moves)
+        possible_moves = remove("left", possible_moves)
 
     if len(possible_moves) > 1:
         # checks for head to heads
 
         if ("up" in possible_moves) and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] + 1)}):
-            remove("up", possible_moves)
+            possible_moves = remove("up", possible_moves)
         if ("down" in possible_moves) and not safe(opponents, {"x": my_head["x"], "y": (my_head["y"] - 1)}):
-            remove("down", possible_moves)
+            possible_moves = remove("down", possible_moves)
         if ("right" in possible_moves) and not safe(opponents, {"x": (my_head["x"] + 1), "y": my_head["y"]}):
-            remove("right", possible_moves)
+            possible_moves = remove("right", possible_moves)
         if ("left" in possible_moves) and not safe(opponents, {"x": (my_head["x"] - 1), "y": my_head["y"]}):
-                remove("left", possible_moves)
+            possible_moves = remove("left", possible_moves)
 
     # if len(possible_moves) > 1:
     #     # prevents getting stuck in a corner
@@ -159,7 +159,7 @@ def choose_move(data: dict) -> str:
 def remove(move, possible_moves):
     if move in possible_moves:
         possible_moves.remove(move)
-
+    return possible_moves
 
 def getDistance(head, point):
     return abs(head["x"] - point["x"]) + abs(head["y"] - point["y"])
