@@ -135,10 +135,6 @@ def choose_move(data: dict) -> str:
         remove("left", possible_moves)
 
     if len(possible_moves) > 1:
-        # prevents getting stuck in a corner
-        awayFromCorners(my_head, possible_moves, board_height, board_width)
-
-    if len(possible_moves) > 1:
         # checks for head to heads
         for each in possible_moves:
             if each == "up" and not safe(opponents, {"x": my_head["x"], "y": my_head["y"] + 1}):
@@ -149,6 +145,10 @@ def choose_move(data: dict) -> str:
                 remove(each, possible_moves)
             elif each == "left" and not safe(opponents, {"x": my_head["x"] - 1, "y": my_head["y"]}):
                 remove(each, possible_moves)
+
+    if len(possible_moves) > 1:
+        # prevents getting stuck in a corner
+        awayFromCorners(my_head, possible_moves, board_height, board_width)
 
     move = random.choice(possible_moves)
 
